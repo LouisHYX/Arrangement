@@ -5,16 +5,16 @@
 (function (win, doc) {
     "use strict";
 
-    var defaults = {  //默认配置参数
+    let defaults = {  //默认配置参数
         shell: "shell",  //默认外层盒子id
         region: "region",  //默认里层盒子class
         gap: 10,  //regions之间的间距，单位px,
         callback: null  //拖放结束后的回调
     };
-    var shell = null;  //最外层盒子
-    var regions = [];  //全部region
-    var curRegion = null;  //当前要拖动的region
-    var column = 0;  //总列数
+    let shell = null;  //最外层盒子
+    let regions = [];  //全部region
+    let curRegion = null;  //当前要拖动的region
+    let column = 0;  //总列数
 
     /**
      * 将用户定义的参数与默认参数进行合并(深拷贝)
@@ -23,7 +23,7 @@
      * @returns {{}}
      */
     function comParams(cus, def) {
-        var res = {};  //需要返回的结果
+        let res = {};  //需要返回的结果
         if (cus === undefined) {
             cus = {};
         }
@@ -33,7 +33,7 @@
             return Object.prototype.toString.call(o) === '[object Object]';
         }
 
-        for (var key in def) {
+        for (let key in def) {
             if (def.hasOwnProperty(key)) {  //默认参数是否具有key属性
                 if (cus.hasOwnProperty(key)) {  //自定义参数是否具有key属性
                     if (isObject(def[key]) && isObject(cus[key])) {  //默认参数与自定义参数的key属性是否都是object
@@ -58,7 +58,7 @@
          * @constructor
          */
         function Arrangement(options) {
-            var me = this;
+            let me = this;
 
             me.config = comParams(options, defaults);  //默认参数与用户自定义参数合并
 
@@ -71,7 +71,7 @@
             shell.style.position = "relative";
 
             //---------------------------------获取shell的所有里层盒子
-            for (var i = 0; i < shell.childNodes.length; i++) {
+            for (let i = 0; i < shell.childNodes.length; i++) {
                 if (shell.childNodes[i].nodeType === 1 && shell.childNodes[i].tagName.toLowerCase() === "div" && shell.childNodes[i].className.indexOf(me.config.region) !== -1) {
                     regions.push(shell.childNodes[i]);
                     regions[regions.length - 1].style.position = "absolute";
@@ -91,7 +91,7 @@
              * 插件初始化
              */
             init: function () {
-                var me = this;
+                let me = this;
                 me.arrange();
             },
 
@@ -99,14 +99,14 @@
              * 排列每个region
              */
             arrange: function () {
-                var me = this;
-                var gap = me.config.gap;  //盒子间距
-                var shellW = me.getSW();  //当前shell的宽度
-                var regionsW = 0;  //一横行regions的当前总宽度
-                var regionsH = 0;  //一竖行regions的当前总高度
+                let me = this;
+                let gap = me.config.gap;  //盒子间距
+                let shellW = me.getSW();  //当前shell的宽度
+                let regionsW = 0;  //一横行regions的当前总宽度
+                let regionsH = 0;  //一竖行regions的当前总高度
                 column = Math.floor((shellW - gap) / (regions[0].offsetWidth + gap));  //region列数
 
-                for (var i = 0; i < regions.length; i++) {
+                for (let i = 0; i < regions.length; i++) {
                     if (i !== 0 && i % column === 0) {
                         regionsW = 0;  //换行后第一个region左边距重置为0
                         regionsH += regions[i].offsetHeight + gap;  //重新设置当前行region的上边距
@@ -125,18 +125,18 @@
              * @private
              */
             _bindE: function () {
-                var me = this;
-                var isDrag = false;  //是否可以拖动
-                var m_offset = [];  //鼠标按下时相对于region左上角的坐标
-                var origin_pos = [];  //鼠标按下时reigion原始坐标
-                var shellW = me.getSW();  //当前shell的宽度
-                var shellH = me.getSH();  //当前shell的高度
-                var singleW = regions[0].offsetWidth + me.config.gap;  //单个region宽度
-                var singleH = regions[0].offsetHeight + me.config.gap;  //单个region高度
-                var coordinate = [];  //要插入的位置坐标
-                var origin_index = 0;  //当前reigon原始数组索引
-                var new_pos = 0;  //当前reigon新数组索引
-                var curRegionClone = null;  //curRegion的克隆体
+                let me = this;
+                let isDrag = false;  //是否可以拖动
+                let m_offset = [];  //鼠标按下时相对于region左上角的坐标
+                let origin_pos = [];  //鼠标按下时reigion原始坐标
+                let shellW = me.getSW();  //当前shell的宽度
+                let shellH = me.getSH();  //当前shell的高度
+                let singleW = regions[0].offsetWidth + me.config.gap;  //单个region宽度
+                let singleH = regions[0].offsetHeight + me.config.gap;  //单个region高度
+                let coordinate = [];  //要插入的位置坐标
+                let origin_index = 0;  //当前reigon原始数组索引
+                let new_pos = 0;  //当前reigon新数组索引
+                let curRegionClone = null;  //curRegion的克隆体
 
                 shell.addEventListener("mousedown", function (e) {  //绑定鼠标按下事件
                     if (e.target.tagName.toLowerCase() === "div" && e.target.className.indexOf(me.config.region) !== -1) {
@@ -160,8 +160,8 @@
                 });
 
                 doc.addEventListener("mousemove", function (e) {  //绑定鼠标拖动事件
-                    var mousePos = [e.pageX, e.pageY];  //鼠标当前相对于页面的坐标
-                    var regionPos = [0, 0];  //region新的坐标
+                    let mousePos = [e.pageX, e.pageY];  //鼠标当前相对于页面的坐标
+                    let regionPos = [0, 0];  //region新的坐标
                     if (isDrag) {
                         regionPos = [
                             mousePos[0] - m_offset[0],
